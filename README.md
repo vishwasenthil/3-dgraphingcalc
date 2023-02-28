@@ -6,4 +6,5 @@ Hi! We are Team Gengar Gang of Mr. Hong's 6th period Special Topics in CS class.
 Thoughout the weeks and sprints, we will continuously update this README about new changes and add descriptions for new files. 
 
   Thanks for reading and wish us luck,
+  
   Gengar
