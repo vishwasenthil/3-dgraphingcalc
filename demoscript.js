@@ -1,28 +1,58 @@
 const canvas = document.getElementById('renderCanvas');
 const engine = new BABYLON.Engine(canvas, true);
+
+//update mesh using changed min/max/delta values when we zoom in/out
+//probably check for updates in RenderLoop?
+const deltax = 0.3;
+const deltaz = 0.3; 
+const zmax = 10;
+const xmax = 10;
+
 const createScene = function() {
     const scene = new BABYLON.Scene(engine);
-    /*
-    const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(5, 5, 5), scene);
-    */
 
+    //Custom Camera or switch back and forth between Universal and ArcRotate
+    //const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(5, 5, 5), scene);
     let camera = new BABYLON.ArcRotateCamera("camera", BABYLON.Tools.ToRadians(90), BABYLON.Tools.ToRadians(65), 10, BABYLON.Vector3.Zero(), scene);
-    
     camera.attachControl(canvas, true);
     //Refer to https://doc.babylonjs.com/features/featuresDeepDive/cameras/customizingCameraInputs for customized camera input
-    const light = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-1, -1, -2));
- 
+    
+    
+    //const light = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-1, -1, -2));
+    const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(-1,-1, -2)); //this light looks better?
     light.intensity = 1;
-    const box = BABYLON.MeshBuilder.CreateBox('box', {size:3}, scene);
-    const axes = new BABYLON.AxesViewer(scene, 10);
+
+    //place a function proccessor here and use it as input in for loop below.
+
+    const paths = [];
+
+    for (let z = -1 * zmax; z < zmax; z = z + deltaz) {
+        const path = [];
+        for (let x = -1 * xmax; x < xmax; x = x + deltaz) {
+            path.push(new BABYLON.Vector3(x, z * x * x, z))
+        }
+        //const line = BABYLON.MeshBuilder.CreateLines('line', {points:path}, scene); //uncomment this line if you want to see the lines of ribbon
+        paths.push(path);
+    }
+
+    //Options for graph
+    let graphOptions = {
+        pathArray: paths,
+        updatable: true,
+        sideOrientation: BABYLON.Mesh.DOUBLESIDE
+    }
+
+    let ribbon = BABYLON.MeshBuilder.CreateRibbon("ribbon", graphOptions, scene);
+    
+    const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for x,y,z and add axis label?
     return scene;
 }
+
 const scene = createScene();
-let box = scene.getMeshById('box');
+
 engine.runRenderLoop(function () {
     scene.render();
-    box.rotation.x += 0.02;
-    box.rotation.y += 0.03;
+
 });
 
 window.addEventListener("resize", function() {
