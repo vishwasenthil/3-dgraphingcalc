@@ -17,19 +17,21 @@ const createScene = function() {
     camera.attachControl(canvas, true);
     //Refer to https://doc.babylonjs.com/features/featuresDeepDive/cameras/customizingCameraInputs for customized camera input
     
-    
     //const light = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-1, -1, -2));
     const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(-1,-1, -2)); //this light looks better?
     light.intensity = 1;
 
-    //place a function proccessor here and use it as input in for loop below.
-
     const paths = [];
-
-    for (let z = -1 * zmax; z < zmax; z = z + deltaz) {
+    let expressions = "x * x + z * x";                 // get user input from html element and turn it into latex expressions?
+    for (let currentZ = -1 * zmax; currentZ < zmax; currentZ = currentZ + deltaz) {
         const path = [];
-        for (let x = -1 * xmax; x < xmax; x = x + deltaz) {
-            path.push(new BABYLON.Vector3(x, z * x * x, z))
+        for (let currentX = -1 * xmax; currentX < xmax; currentX = currentX + deltax) {
+            let scope = {
+                x: currentX,
+                z: currentZ
+            }
+            let y = math.evaluate(expressions, scope);
+            path.push(new BABYLON.Vector3(currentX, y, currentZ))
         }
         //const line = BABYLON.MeshBuilder.CreateLines('line', {points:path}, scene); //uncomment this line if you want to see the lines of ribbon
         paths.push(path);
@@ -52,7 +54,6 @@ const scene = createScene();
 
 engine.runRenderLoop(function () {
     scene.render();
-
 });
 
 window.addEventListener("resize", function() {
