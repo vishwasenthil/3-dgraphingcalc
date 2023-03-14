@@ -2,12 +2,6 @@ const canvas = document.getElementById('renderCanvas');
 const textInput = document.getElementById('input');
 const engine = new BABYLON.Engine(canvas, true);
 let currentGraph;
-//update mesh using changed min/max/delta values when we zoom in/out
-//probably check for updates in RenderLoop?
-const deltax = 0.3;
-const deltaz = 0.3; 
-const zmax = 10;
-const xmax = 10;
 
 const createScene = function() {
     const scene = new BABYLON.Scene(engine);
@@ -25,8 +19,8 @@ const createScene = function() {
     const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for x,y,z and add axis label?
     return scene;
 }
-
 const scene = createScene();
+
 textInput.oninput = function() {
     if(currentGraph != null) currentGraph.dispose();
     try {
@@ -36,13 +30,13 @@ textInput.oninput = function() {
         //error statement if needed. display something to let user know of what to do?
     }
 }
-engine.runRenderLoop(function () {
-    scene.render();
-});
 
-window.addEventListener("resize", function() {
-    engine.resize();
-});
+//update mesh using changed min/max/delta values when we zoom in/out?
+//probably check for updates in RenderLoop?
+const deltax = 0.3;
+const deltaz = 0.3; 
+const zmax = 10;
+const xmax = 10;
 
 const createObject = function(expression) {
     const paths = [];               // get user input from html element and turn it into latex expressions?
@@ -69,3 +63,12 @@ const createObject = function(expression) {
     }
     currentGraph = BABYLON.MeshBuilder.CreateRibbon("ribbon", graphOptions, scene);
 }
+
+engine.runRenderLoop(function () {
+    scene.render();
+});
+
+window.addEventListener("resize", function() {
+    engine.resize();
+});
+
