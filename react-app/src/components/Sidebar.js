@@ -1,3 +1,5 @@
+import "./componentStyles/Sidebar.css"
+
 function Sidebar() {
     let containerStyle = {
         height:"100vh",
@@ -8,12 +10,13 @@ function Sidebar() {
     let sidebarStyle = {
         gridColumns:`1/2`,
         background:`#ccc`,
-        border:`3px solid black`
+        border:`3px solid black`,
+        position:`relative`
     };
     return(
         <div style={containerStyle}>
             <aside style={sidebarStyle}>
-                <input type="text"/>
+                <input type="text" style={{position:`absolute`, left:`0`, top:`0`, width:`100%`, boxSizing:`border-box`}}/>
             </aside>
         </div>
     );
