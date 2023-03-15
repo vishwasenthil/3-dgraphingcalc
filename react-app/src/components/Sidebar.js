@@ -1,14 +1,19 @@
 function Sidebar() {
+    let containerStyle = {
+        height:"100vh",
+        width:"100vw",
+        display:`grid`,
+        gridTemplateColumns:`1fr 3fr`
+    };
     let sidebarStyle = {
-        width:`25%`,
-        height:`100%`,
+        gridColumns:`1/2`,
         background:`#ccc`,
         border:`3px solid black`
     };
     return(
-        <div style={{display:`flex`, justifyContent:`left`, width:`100vw`, height:`100vh`}}>
+        <div style={containerStyle}>
             <aside style={sidebarStyle}>
-
+                <input type="text"/>
             </aside>
         </div>
     );
