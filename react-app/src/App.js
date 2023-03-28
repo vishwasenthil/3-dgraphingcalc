@@ -1,6 +1,7 @@
 import './App.css';
 import Sidebar from "./components/Sidebar";
-import SceneComponent from "./components/SceneComponent";
+import { FreeCamera, Vector3, HemisphericLight, MeshBuilder } from "@babylonjs/core";
+import SceneComponent from "babylonjs-hook";
 
 let box;
 
@@ -47,8 +48,9 @@ const onRender = (scene) => {
 function App() {
   return (
     <div>
+      <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="my-canvas" />
       <Sidebar/>
-      <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="my-canvas" />    </div>
+    </div>
   );
 }
 
