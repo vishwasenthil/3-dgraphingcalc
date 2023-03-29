@@ -1,4 +1,4 @@
-import "./componentStyles/Sidebar.css"
+import "./css/Sidebar.css"
 
 function Sidebar() {
     let containerStyle = {

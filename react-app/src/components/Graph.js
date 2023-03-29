@@ -1,6 +1,8 @@
 import { FreeCamera, Vector3, HemisphericLight, MeshBuilder } from "@babylonjs/core";
 import SceneComponent from "babylonjs-hook";
 
+import "./css/GraphStyles.css";
+
 let box;
 
 const onSceneReady = (scene) => {

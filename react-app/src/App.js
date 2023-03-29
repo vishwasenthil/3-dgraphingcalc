@@ -5,8 +5,10 @@ import Graph from "./components/Graph"
 function App() {
   return (
     <div>
-      <Sidebar/>
-      <Graph/>
+      <main id="container">
+        <Graph/>
+        <Sidebar/>
+      </main>
     </div>
   );
 }
