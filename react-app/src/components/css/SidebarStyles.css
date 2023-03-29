@@ -1,0 +1,6 @@
+#sidebar {
+    grid-column:"1/2";
+    background:"#ccc";
+    border:"3px solid black";
+    position:"relative";
+}

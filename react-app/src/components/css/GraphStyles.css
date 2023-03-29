@@ -1,0 +1,8 @@
+div {
+    grid-column:2/3;
+    grid-row:1/2;
+}
+#my-canvas {
+    width:100%;
+    height:99%;
+}
