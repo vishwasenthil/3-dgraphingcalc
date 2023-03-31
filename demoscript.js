@@ -94,7 +94,7 @@ const resizeGraph = () => {
     }
 }
 
-//const resizeInterval = setInterval(resizeGraph, 5000);
+const resizeInterval = setInterval(resizeGraph, 5000);
 //Do we like resizing every few seconds better or instantaneous?
 
 window.addEventListener("resize", function() {
