@@ -1,8 +1,12 @@
 const canvas = document.getElementById('renderCanvas');
-const textInput = document.getElementById('input');
+const textInput1 = document.getElementById('input1');
+const textInput2 = document.getElementById('input2');
 const engine = new BABYLON.Engine(canvas, true);
-let currentGraph;
+
 let lastRadius;
+let numMesh = 2;
+
+
 
 const createScene = function() {
     const scene = new BABYLON.Scene(engine);
@@ -20,20 +24,26 @@ const createScene = function() {
 
     const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for x,y,z and add axis label?
     return scene;
-
 }
 
 const scene = createScene();
 const camera = scene.cameras[0];
 
-textInput.oninput = () => recreateMesh(textInput.value, camera.radius);
+//id assigning system and storing textInput objects are to be dealt with while merging with vishwa's 
+textInput1.oninput = () => recreateMesh(textInput1.value, 1);
+textInput2.oninput = () => recreateMesh(textInput2.value, 2);
+let textInputs = [textInput1, textInput2];
+
+
 
 //removes currently old graph and creates a new graph based on new informations
-const recreateMesh = (expression, radius) => {
-    if(currentGraph != null) currentGraph.dispose();
+const recreateMesh = (expression, id) => {
+    let currentGraph = scene.getMeshByName("graph" + id); 
+    if(currentGraph != null) {
+        currentGraph.dispose();
+    }
     try {
-        let parameters = sampleParameters(radius);
-        generateMeshFromFunction(expression, parameters[0], parameters[1]);
+        generateMeshFromFunction(expression, id);
     }    
     catch(error) {
         //error statement if needed. display something to let user know of what to do?
@@ -42,9 +52,9 @@ const recreateMesh = (expression, radius) => {
 
 //parameter - radius of camera
 //return value - [range, step] for sampling of the mesh
-const sampleParameters = (currentRadius) => {
-    let absoluteRadius = Math.abs(currentRadius); //resolves issues with negative radius
-    return [absoluteRadius * 3, absoluteRadius * 0.05];
+const getSamplingParameters = () => {
+    let absoluteRadius = Math.abs(lastRadius); //resolves issues with negative radius
+    return [absoluteRadius * 3, absoluteRadius * 0.02];
     //modify these values (maybe nonlinear function could do) to make the graph look nicer
 }
 
@@ -52,8 +62,12 @@ const sampleParameters = (currentRadius) => {
     Nerdamer - Library that can handle implicit function solving
     Marching Cubes Algiorhtm OR add distinct surface detecting algorithm on current method
 */
-//
-const generateMeshFromFunction = (expression, range, step) => {
+// ID:Integer code corresponding to expression
+const generateMeshFromFunction = (expression, id) => {
+    let parameters = getSamplingParameters();
+    let range = parameters[0];
+    let step = parameters[1];
+
     const paths = [];
 
     for (let currentZ = -1 * range; currentZ < range; currentZ = currentZ + step) {
@@ -77,7 +91,8 @@ const generateMeshFromFunction = (expression, range, step) => {
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     }
 
-    currentGraph = BABYLON.MeshBuilder.CreateRibbon("ribbon", graphOptions, scene);
+    currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, scene);
+
 }
 
 const resizeThreshold = 30;
@@ -88,9 +103,15 @@ engine.runRenderLoop(function() {
 });
 
 const resizeGraph = () => {
+    
     if (Math.abs(lastRadius - camera.radius) > resizeThreshold) {
         lastRadius = camera.radius;
-        recreateMesh(textInput.value, lastRadius);
+        for (let i = 0; i < numMesh; i++) {
+            let currentTextInput = textInputs[i];
+            if (currentTextInput.value !== "") {
+                recreateMesh(currentTextInput.value, i + 1);
+            }
+        }
     }
 }
 
