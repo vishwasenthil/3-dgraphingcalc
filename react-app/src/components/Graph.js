@@ -1,37 +1,34 @@
 import * as BABYLON from "@babylonjs/core";
 import SceneComponent from "babylonjs-hook";
-import {useContext} from "react";
 
-import {
-  atan2, chain, derivative, e, evaluate, log, pi, pow, round, sqrt
-} from 'mathjs'
+import {evaluate} from 'mathjs'
 
 import "./css/GraphStyles.css";
- 
+
 let camera;
 let currentGraph;
 let lastRadius;
 let myScene;
 
 const onSceneReady = (scene) => {
-  myScene = scene;
-  const canvas = scene.getEngine().getRenderingCanvas();
-  //Custom Camera or switch back and forth between Universal and ArcRotate
-  //const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(5, 5, 5), scene);
-  camera = new BABYLON.ArcRotateCamera("camera", BABYLON.Tools.ToRadians(90), BABYLON.Tools.ToRadians(65), 10, BABYLON.Vector3.Zero(), scene);
-  camera.attachControl(canvas, true);
-  lastRadius = camera.radius;
-  //Refer to https://doc.babylonjs.com/features/featuresDeepDive/cameras/customizingCameraInputs for customized camera input
-  
-  //const light = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-1, -1, -2));
-  const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(-1,-1, -2)); //this light looks better?
-  light.intensity = 1;
+myScene = scene;
+const canvas = scene.getEngine().getRenderingCanvas();
+//Custom Camera or switch back and forth between Universal and ArcRotate
+//const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(5, 5, 5), scene);
+camera = new BABYLON.ArcRotateCamera("camera", BABYLON.Tools.ToRadians(90), BABYLON.Tools.ToRadians(65), 10, BABYLON.Vector3.Zero(), scene);
+camera.attachControl(canvas, true);
+lastRadius = camera.radius;
+//Refer to https://doc.babylonjs.com/features/featuresDeepDive/cameras/customizingCameraInputs for customized camera input
 
-  const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for x,y,z and add axis label?
+//const light = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-1, -1, -2));
+const light = new BABYLON.HemisphericLight('light', new BABYLON.Vector3(-1,-1, -2)); //this light looks better?
+light.intensity = 1;
+
+const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for x,y,z and add axis label?
 };
 
-let textInput = document.getElementById("textInput");
-textInput.onInput = () => recreateMesh(textInput.value, camera.radius);
+//unsure if props.element is referring to the right thing
+//also is it possible to pass entire array of textInputs? I have implemented multiple functions
 
 //removes currently old graph and creates a new graph based on new informations
 export const recreateMesh = (expression, radius) => {
@@ -91,23 +88,23 @@ const resizeThreshold = 30;
  * Will run on every frame render.  We are spinning the box on y-axis.
  */
 const onRender = (scene) => {
-  scene.render();
+scene.render();
 };
 /*
 const resizeGraph = () => {
-  if (Math.abs(lastRadius - camera.radius) > resizeThreshold) {
-      lastRadius = camera.radius;
-      recreateMesh(textInput.value, lastRadius);
-  }
+if (Math.abs(lastRadius - camera.radius) > resizeThreshold) {
+    lastRadius = camera.radius;
+    recreateMesh(textInput.value, lastRadius);
+}
 }
 */
 
-//const resizeInterval = setInterval(resizeGraph, 5000);
-
 function Graph() {
+
+    //const resizeInterval = setInterval(resizeGraph, 5000);
     return(
         <div>
-            <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="renderCanvas" />
+            <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="my-canvas" />
         </div>
     );
 }
