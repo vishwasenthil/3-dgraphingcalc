@@ -12,6 +12,7 @@ let myScene;
 
 const onSceneReady = (scene) => {
 myScene = scene;
+console.log(myScene);
 const canvas = scene.getEngine().getRenderingCanvas();
 //Custom Camera or switch back and forth between Universal and ArcRotate
 //const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(5, 5, 5), scene);
@@ -31,22 +32,26 @@ const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for 
 //also is it possible to pass entire array of textInputs? I have implemented multiple functions
 
 //removes currently old graph and creates a new graph based on new informations
-export const recreateMesh = (expression, radius) => {
-    if(currentGraph != null) currentGraph.dispose();
+
+export const recreateMesh = (expression, id) => {
+    let currentGraph = myScene.getMeshByName("graph" + id); 
+    if(currentGraph != null) {
+        currentGraph.dispose();
+    }
     try {
-        let parameters = sampleParameters(radius);
-        generateMeshFromFunction(expression, parameters[0], parameters[1]);
+        generateMeshFromFunction(expression, id);
     }    
     catch(error) {
         //error statement if needed. display something to let user know of what to do?
     }
 }
 
+
 //parameter - radius of camera
 //return value - [range, step] for sampling of the mesh
-const sampleParameters = (currentRadius) => {
-    let absoluteRadius = Math.abs(currentRadius); //resolves issues with negative radius
-    return [absoluteRadius * 3, absoluteRadius * 0.05];
+const getSamplingParameters = () => {
+    let absoluteRadius = Math.abs(lastRadius); //resolves issues with negative radius
+    return [absoluteRadius * 3, absoluteRadius * 0.02];
     //modify these values (maybe nonlinear function could do) to make the graph look nicer
 }
 
@@ -55,7 +60,11 @@ const sampleParameters = (currentRadius) => {
     Marching Cubes Algiorhtm OR add distinct surface detecting algorithm on current method
 */
 //
-const generateMeshFromFunction = (expression, range, step) => {
+const generateMeshFromFunction = (expression, id) => {
+    let parameters = getSamplingParameters();
+    let range = parameters[0];
+    let step = parameters[1];
+
     const paths = [];
 
     for (let currentZ = -1 * range; currentZ < range; currentZ = currentZ + step) {
@@ -79,7 +88,8 @@ const generateMeshFromFunction = (expression, range, step) => {
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     }
 
-    currentGraph = BABYLON.MeshBuilder.CreateRibbon("ribbon", graphOptions, myScene);
+    currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
+
 }
 
 const resizeThreshold = 30;
