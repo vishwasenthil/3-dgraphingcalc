@@ -2,7 +2,7 @@
 #### run all of these in the terminal: 
 
 ``` rm -rf node_modules   ```
-rm -rf package-lock.json
-npm install react-scripts
-npm install
-npm run start
+``` rm -rf package-lock.json ```
+``` npm install react-scripts ```
+``` npm install ```
+``` npm run start ```
