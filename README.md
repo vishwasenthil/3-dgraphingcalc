@@ -1,4 +1,4 @@
-###if it says something about a react-scripts command not being found just do this:
+if it says something about a react-scripts command not being found just do this:
 
 
 Delete the /node_modules directory and the package-lock.json file using the rm command:
