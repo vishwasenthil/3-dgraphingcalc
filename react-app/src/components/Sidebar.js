@@ -5,7 +5,7 @@ import {recreateMesh} from "./Graph"
 
 function Sidebar(props) {
 
-    let [idNum, setIdNum] = useState(1);
+    //create array for input fields
     
     let sidebarStyle = {
         height:"100%",
@@ -36,9 +36,7 @@ function Sidebar(props) {
     function addInputField(e) {
         console.log(e.key);
         if(e.key === "Enter") {
-            setIdNum(idNum+1);
-            console.log(idNum);
-            <input onChange={handleChange} onKeyDown={addInputField} id={idNum} type="text" style={{position:`absolute`, left:`0`, top:`0`, width:`100%`, boxSizing:`border-box`}}/>
+            //finish
         }
     }
     return(

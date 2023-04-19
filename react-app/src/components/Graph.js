@@ -34,7 +34,7 @@ const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for 
 //removes currently old graph and creates a new graph based on new informations
 
 export const recreateMesh = (expression, id) => {
-    let currentGraph = myScene.getMeshByName("graph" + id); 
+    let currentGraph = myScene.getMeshByName(id); 
     if(currentGraph != null) {
         currentGraph.dispose();
     }
@@ -88,7 +88,7 @@ const generateMeshFromFunction = (expression, id) => {
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     }
 
-    currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
+    currentGraph = BABYLON.MeshBuilder.CreateRibbon(id, graphOptions, myScene);
 
 }
 
