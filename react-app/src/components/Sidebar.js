@@ -39,7 +39,7 @@ function Sidebar(props) {
                 <input type="text" style={{position:`absolute`, left:`0`, top:`0`, width:`100%`, boxSizing:`border-box`}}/>
                 
     function handleChange(e) {
-        recreateMesh(e.target.value, 0);
+        recreateMesh(e.target.value, e.target.id);
     }
     function addInputField(e) {
         console.log(e.key);
