@@ -1,4 +1,3 @@
-import React, {useState} from "react";
 import "./css/SidebarStyles.css"
 import React, { useState, useEffect } from 'react';
 import {recreateMesh} from "./Graph"
@@ -33,10 +32,6 @@ function Sidebar(props) {
     useEffect(() => {
         document.body.className = theme;
     }, [theme]);
-    return(
-        <div style={{height:"100vh", gridColumn:"1/2", gridRow:`1/2`}}>
-            <aside style={sidebarStyle}>
-                <input type="text" style={{position:`absolute`, left:`0`, top:`0`, width:`100%`, boxSizing:`border-box`}}/>
                 
     function handleChange(e) {
         recreateMesh(e.target.value, e.target.id);
