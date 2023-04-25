@@ -1,6 +1,7 @@
 import "./css/SidebarStyles.css"
 import React, { useState, useEffect } from 'react';
 import {recreateMesh} from "./Graph"
+import KeyPadComponent from "./KeyPadComponent";
 
 function Sidebar(props) {
 
@@ -33,9 +34,45 @@ function Sidebar(props) {
         document.body.className = theme;
     }, [theme]);
                 
-    function handleChange(e) {
+    function handleInput(e) {
+        setResult(e.target.value); //sets result/value of textbox to updated version
         recreateMesh(e.target.value, e.target.id);
     }
+
+
+    const [result, setResult] = useState(``);
+    let onClick = button => {
+        if(button === "C"){
+            reset()
+        }
+        else if(button === "DEL"){
+            backspace()
+        }
+        else {
+            var r2 = result + button; //fix to previous issue w/ accessing updated result value, using an extra variable
+            setResult(
+                r2
+            )
+            recreateMesh(r2, 10);
+        }
+    };
+let reset = () => {
+            var r2 = "";
+            setResult(
+                r2
+            )
+            recreateMesh(r2, 10);
+        };
+    
+        let backspace = () => {
+            if (result !== "") {
+                var r2 = result.slice(0, -1);
+                setResult(
+                    r2
+                )
+            }
+            recreateMesh(r2, 10);
+        };
     function addInputField(e) {
         console.log(e.key);
         if(e.key === "Enter") {
@@ -57,11 +94,13 @@ function Sidebar(props) {
                     arr.map((input, index)=>{
                         return(
                             <div>
-                                <input onChange={handleChange} onKeyDown={addInputField} id={index} type="text" style={{ width:`100%`, boxSizing:`border-box`}}/>
+                                <input onInput={handleInput} value={result} onKeyDown={addInputField} id={index} type="text" style={{ width:`100%`, boxSizing:`border-box`}}/>
                             </div>
                         );
                     })
+            
                 }
+                <KeyPadComponent onClick={onClick}/>
             </aside>
             <button onClick={toggleTheme} style={{position:`relative`, left:`1000`, top:`1000`}}> Change Light Mode </button>
         </div>
