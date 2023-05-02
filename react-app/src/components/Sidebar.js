@@ -102,7 +102,7 @@ let reset = () => {
                 }
                 <KeyPadComponent onClick={onClick}/>
             </aside>
-            <button onClick={toggleTheme} style={{position:`relative`, left:`1000`, top:`1000`}}> Change Light Mode </button>
+            <button onClick={toggleTheme} style={{position:`relative`, left:`0`, top:`0`}}> Change Light Mode </button>
         </div>
         
     );
