@@ -3,7 +3,13 @@
     background:"#ccc";
     border:"3px solid black";
     position:"relative";
+    
 }
+
+.add-scroll {
+    
+    overflow-y: scroll;
+  }
 .dark {
     background-color: #444343;
     color: #fff;

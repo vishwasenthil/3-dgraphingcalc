@@ -6,7 +6,7 @@ function KeyPadComponent(props) {
 
         <div className="button">
 
-            <br />
+            
 
 
 

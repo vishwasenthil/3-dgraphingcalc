@@ -88,7 +88,7 @@ let reset = () => {
         return;
     }
     return(
-        <div style={{height:"100vh", gridColumn:"1/2", gridRow:`1/2`}}>
+        <div className="add-scroll" style={{height:"98vh", gridColumn:"1/2", gridRow:`1/2`}}>
             <aside style={sidebarStyle}>
                 {
                     arr.map((input, index)=>{
@@ -101,8 +101,9 @@ let reset = () => {
             
                 }
                 <KeyPadComponent onClick={onClick}/>
+                <button onClick={toggleTheme} style={{position:`relative`, left:`1000`, top:`1000`}}> Change Light Mode </button>
             </aside>
-            <button onClick={toggleTheme} style={{position:`relative`, left:`1000`, top:`1000`}}> Change Light Mode </button>
+            
         </div>
         
     );
