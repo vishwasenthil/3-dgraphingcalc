@@ -4,7 +4,7 @@ const textInput2 = document.getElementById('input2');
 const button = document.getElementById('button');
 const engine = new BABYLON.Engine(canvas, true);
 
-let lastRadius;
+let lastRadius = 20;
 let numMesh = 2;
 
 let currentCameraState = 'universal';
@@ -44,10 +44,10 @@ const createScene = function() {
 
     //Custom Camera or switch back and forth between Universal and ArcRotate
     //const camera = new BABYLON.UniversalCamera('camera1', new BABYLON.Vector3(5, 5, 5), scene);
+    
     UniversalCamera = new BABYLON.UniversalCamera('universalCamera', new BABYLON.Vector3(5, 5, 5), scene);
     ArcRotateCamera = new BABYLON.ArcRotateCamera('arcRotateCamera', BABYLON.Tools.ToRadians(90), BABYLON.Tools.ToRadians(65), 10, BABYLON.Vector3.Zero(), scene);
     camera = UniversalCamera;
-    lastRadius = camera.radius;
     //Refer to https://doc.babylonjs.com/features/featuresDeepDive/cameras/customizingCameraInputs for customized camera input
     
     //const light = new BABYLON.DirectionalLight('light', new BABYLON.Vector3(-1, -1, -2));
@@ -75,8 +75,11 @@ const recreateMesh = (expression, id) => {
         currentGraph.dispose();
     }
     try {
-        generateMeshFromFunction(expression, id);
+        if (expression !== "") {
+            generateMeshFromFunction(expression, id);
+        }
     }    
+
     catch(error) {
         //error statement if needed. display something to let user know of what to do?
     }
@@ -85,7 +88,7 @@ const recreateMesh = (expression, id) => {
 //parameter - radius of camera
 //return value - [range, step] for sampling of the mesh
 const getSamplingParameters = () => {
-    let absoluteRadius = Math.abs(lastRadius); //resolves issues with negative radius
+    let absoluteRadius = Math.abs(5); //resolves issues with negative radius
     return [absoluteRadius * 3, absoluteRadius * 0.02];
     //modify these values (maybe nonlinear function could do) to make the graph look nicer
 }
@@ -95,39 +98,119 @@ const getSamplingParameters = () => {
     Marching Cubes Algiorhtm OR add distinct surface detecting algorithm on current method
 */
 // ID:Integer code corresponding to expression
+
+
+
+let yLimit = 15; //figure out the algorithm for determining min/max cutoff values
+const noOverLap = 1;
+
 const generateMeshFromFunction = (expression, id) => {
     let parameters = getSamplingParameters();
     let range = parameters[0];
     let step = parameters[1];
-
+    
     const paths = [];
 
+    
+    let previousPoint = {
+        x: 100,
+        y: 100,
+        z: 100,
+    }
+    
+    let path = [];
+
+
+
+    //CURRENT ISSUE: cannot simply ignore to push due to babylon.
     for (let currentZ = -1 * range; currentZ < range; currentZ = currentZ + step) {
-        const path = [];
+        path = [];
+
         for (let currentX = -1 * range; currentX < range; currentX = currentX + step) {
             let scope = {
                 x: currentX,
                 z: currentZ
             }
-            let y = math.evaluate(expression, scope); 
+            let currentY = math.evaluate(expression, scope);
+
             
-            path.push(new BABYLON.Vector3(currentX, y, currentZ))
+            if(Math.abs(currentY) > yLimit) {
+                if (currentY < 0) {
+                    currentY = -1 * yLimit;
+                }
+                else {
+                    currentY = yLimit;
+                }
+                /*
+                path.push(currentX, yMax, currentZ);
+                
+                previousPoint = { 
+                    x: currentX,
+                    y: currentY,
+                    z: currentZ
+                }
+                */
+            }
+            else {
+                /* 
+                path.push(previousPoint.x, previousPoint.y, previousPoint.z);
+                previousPoint.x = previousPoint.x + noOverLap;
+                */
+            }
+            path.push(new BABYLON.Vector3(currentX, currentY, currentZ)); //THIS WORKS
+
         }
-        //const line = BABYLON.MeshBuilder.CreateLines('line', {points:path}, scene); //uncomment this line if you want to see the lines of ribbon
+
         paths.push(path);
     }
     
+
+    /* EXPERIMENTAL VERSION for derivative approach
+    let currentZ = -1 * range;
+    let currentX = -1 * range;
+    let paths = [];
+    let path = [];
+    let stepX = 1;
+    let scope = {
+        x: currentX,
+        z: currentZ
+    };
+
+    while(currentZ < range) {
+        path = [];
+        while (currentX < range) {
+            scope = {
+                x: currentX,
+                z: currentZ
+            }
+
+            let currentY = math.evaluate(expression, scope);
+
+            path.push(new BABYLON.Vector3(currentX, currentY, currentZ))
+            let d = math.derivative(expression, 'x').evaluate(scope);
+            currentX = currentX + math.abs(1 / d);
+        }
+        currentZ = currentZ + step;
+        paths.push(path);
+    }
+    */
+
+    // BELOW WORKS FINE
+    console.log(paths);
+
     let graphOptions = {
         pathArray: paths,
         updatable: true,
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     }
 
-    currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, scene);
-
+    let currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
 }
 
 const resizeThreshold = 30;
+
+//generateMeshFromFunction("x^2+z^2", 5);
+
 
 engine.runRenderLoop(function() {
     myScene.render();
@@ -148,7 +231,7 @@ const resizeGraph = () => {
     }
 }
 
-const resizeInterval = setInterval(resizeGraph, 5000);
+//const resizeInterval = setInterval(resizeGraph, 5000);
 //Do we like resizing every few seconds better or instantaneous?
 
 window.addEventListener("resize", function() {
