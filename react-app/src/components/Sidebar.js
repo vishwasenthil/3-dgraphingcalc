@@ -20,10 +20,6 @@ function Sidebar(props) {
         position:`relative`
     };
 
-    const [isOpen, barIsOpen] = useState(false);
-    const toggleSidebar = () => {
-        barIsOpen(!isOpen);
-    }
     
     
     const [theme, setTheme] = useState('light');
@@ -53,8 +49,7 @@ function Sidebar(props) {
                 }
                 
             </aside>
-            <button onClick={toggleSidebar}>Toggle Sidebar</button>
-            {isOpen &&  <Sidebar/> }
+            
             <button onClick={toggleTheme} style={{position:`relative`, left:`0`, top:`0`}}> Change Light Mode </button>
         </div>
     );
