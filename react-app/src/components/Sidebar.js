@@ -6,15 +6,11 @@ import { DisplayPassPostProcess } from "@babylonjs/core";
 
 function Sidebar(props) {
 
-    //create array for input fields
-
-    let inputArr = [
-        {
-            id: 0,
-        }
-    ];
-
-    let [arr, setArr] = useState(inputArr);
+    
+    let inputRef = useRef([]);
+    const [result, setResult] = useState([``]);
+    const [theme, setTheme] = useState('light');
+    let [lastFocused, setLastFocused] = useState(0);
 
     let sidebarStyle = {
         height: "100%",
@@ -22,8 +18,6 @@ function Sidebar(props) {
         border: `3px solid black`,
         position: `relative`
     };
-
-    const [theme, setTheme] = useState('light');
     const toggleTheme = () => {
         if (theme === 'light') {
             setTheme('dark');
@@ -35,6 +29,16 @@ function Sidebar(props) {
         document.body.className = theme;
     }, [theme]);
 
+    //create array for input fields
+
+    let inputArr = [
+        {
+            id: 0,
+        }
+    ];
+
+    let [arr, setArr] = useState(inputArr);
+
     function handleInput(e) {
         let r = [...result];
         r[e.target.id] = e.target.value;
@@ -44,11 +48,6 @@ function Sidebar(props) {
         setResult(r); //sets result/value of textbox to updated version
         recreateMesh(e.target.value, e.target.id);
     }
-
-    let inputRef = useRef([]);
-
-
-    const [result, setResult] = useState([``]);
     let onClick = button => {
         if (button === "C") {
             reset()
@@ -104,7 +103,6 @@ function Sidebar(props) {
         }
         return;
     }
-    let [lastFocused, setLastFocused] = useState(0);
     return (
         <div style={{ height: "100vh", gridColumn: "1/2", gridRow: `1/2` }}>
             <aside style={sidebarStyle}>
