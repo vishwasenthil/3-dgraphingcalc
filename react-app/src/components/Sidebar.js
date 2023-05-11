@@ -42,8 +42,6 @@ function Sidebar(props) {
     function handleInput(e) {
         let r = [...result];
         r[e.target.id] = e.target.value;
-        console.log(`${e.target.value}`);
-        console.log(`result array ${r}`)
 
         setResult(r); //sets result/value of textbox to updated version
         recreateMesh(e.target.value, e.target.id);
@@ -56,10 +54,11 @@ function Sidebar(props) {
             backspace()
         }
         else {
-            result[lastFocused] = result+button;
-            let r2 = result;
+            let r2 = [...result]; //[...result] instead of result
+            r2[lastFocused] = r2[lastFocused]+button;
+            console.log(r2[lastFocused]);
             setResult(r2);
-            recreateMesh(r2, 10);
+            recreateMesh(r2[lastFocused], lastFocused); //changed parameters
         }
     };
     let reset = () => {
@@ -110,7 +109,6 @@ function Sidebar(props) {
                     arr.map((input, index) => {
                         return (
                             <div>
-                                {console.log(result[index])}
                                 <input key={index} ref={inputRef} onFocus={(()=>setLastFocused(index))} onInput={handleInput} value={result[index]} onKeyDown={addInputField} id={index} type="text" style={{ width: `100%`, boxSizing: `border-box` }} />
                             </div>
                         );
