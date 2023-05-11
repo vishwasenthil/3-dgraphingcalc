@@ -1,7 +1,7 @@
 import * as BABYLON from "@babylonjs/core";
 import SceneComponent from "babylonjs-hook";
 
-import {evaluate} from 'mathjs'
+import {evaluate, intersect} from 'mathjs'
 
 import "./css/GraphStyles.css";
 
@@ -34,7 +34,9 @@ const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for 
 //removes currently old graph and creates a new graph based on new informations
 
 export const recreateMesh = (expression, id) => {
-    let currentGraph = myScene.getMeshByName(id); 
+    console.log(id);
+    let currentGraph = myScene.getMeshById("graph" + id); 
+    console.log(currentGraph);
     if(currentGraph != null) {
         currentGraph.dispose();
     }
@@ -46,6 +48,12 @@ export const recreateMesh = (expression, id) => {
     }
 }
 
+export const clearMesh = (maxId) => {
+    for(let i = 0; i < maxId; i++) {
+        let currentMesh = myScene.getMeshByName("graph" + i)
+        currentMesh.dispose();
+    }
+}
 
 //parameter - radius of camera
 //return value - [range, step] for sampling of the mesh
@@ -88,7 +96,7 @@ const generateMeshFromFunction = (expression, id) => {
         sideOrientation: BABYLON.Mesh.DOUBLESIDE
     }
 
-    currentGraph = BABYLON.MeshBuilder.CreateRibbon(id, graphOptions, myScene);
+    currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
 
 }
 
