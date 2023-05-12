@@ -8,7 +8,7 @@ import "./css/GraphStyles.css";
 let camera;
 let currentGraph;
 let lastRadius;
-let myScene;
+export let myScene;
 
 const onSceneReady = (scene) => {
 myScene = scene;
@@ -108,6 +108,8 @@ if (Math.abs(lastRadius - camera.radius) > resizeThreshold) {
 }
 }
 */
+
+
 
 function Graph() {
 
