@@ -89,8 +89,8 @@ const recreateMesh = (expression, id) => {
 //return value - [range, step] for sampling of the mesh
 const getSamplingParameters = () => {
     let absoluteRadius = Math.abs(5); //resolves issues with negative radius
-    return [absoluteRadius * 3, absoluteRadius * 0.02];
-    //modify these values (maybe nonlinear function could do) to make the graph look nicer
+    //return [absoluteRadius * 3, absoluteRadius * 0.02];
+    return [absoluteRadius * 3, absoluteRadius * 0.02];    //modify these values (maybe nonlinear function could do) to make the graph look nicer
 }
 
 /* FUTURE SPRINT PLANS FOR IMPLICIT FUNCTION MESH GENERATION
@@ -102,114 +102,56 @@ const getSamplingParameters = () => {
 
 
 let yLimit = 15; //figure out the algorithm for determining min/max cutoff values
-const noOverLap = 1;
+let noOverLap = 1;
 
 const generateMeshFromFunction = (expression, id) => {
     let parameters = getSamplingParameters();
     let range = parameters[0];
     let step = parameters[1];
-    
     const paths = [];
-
     
-    let previousPoint = {
-        x: 100,
-        y: 100,
-        z: 100,
-    }
-    
-    let path = [];
-
-
-
-    //CURRENT ISSUE: cannot simply ignore to push due to babylon.
     for (let currentZ = -1 * range; currentZ < range; currentZ = currentZ + step) {
-        path = [];
+        
+        let currentPath = [];
 
         for (let currentX = -1 * range; currentX < range; currentX = currentX + step) {
+
             let scope = {
                 x: currentX,
                 z: currentZ
             }
             let currentY = math.evaluate(expression, scope);
 
+            if(Math.abs(currentY) < yLimit) {
+                let point = new BABYLON.Vector3(currentX, currentY, currentZ)
+                currentPath.push(point);                 
+            }
             
-            if(Math.abs(currentY) > yLimit) {
-                if (currentY < 0) {
-                    currentY = -1 * yLimit;
-                }
-                else {
-                    currentY = yLimit;
-                }
-                /*
-                path.push(currentX, yMax, currentZ);
-                
-                previousPoint = { 
-                    x: currentX,
-                    y: currentY,
-                    z: currentZ
-                }
-                */
-            }
-            else {
-                /* 
-                path.push(previousPoint.x, previousPoint.y, previousPoint.z);
-                previousPoint.x = previousPoint.x + noOverLap;
-                */
-            }
-            path.push(new BABYLON.Vector3(currentX, currentY, currentZ)); //THIS WORKS
-
         }
 
-        paths.push(path);
-    }
-    
-
-    /* EXPERIMENTAL VERSION for derivative approach
-    let currentZ = -1 * range;
-    let currentX = -1 * range;
-    let paths = [];
-    let path = [];
-    let stepX = 1;
-    let scope = {
-        x: currentX,
-        z: currentZ
-    };
-
-    while(currentZ < range) {
-        path = [];
-        while (currentX < range) {
-            scope = {
-                x: currentX,
-                z: currentZ
-            }
-
-            let currentY = math.evaluate(expression, scope);
-
-            path.push(new BABYLON.Vector3(currentX, currentY, currentZ))
-            let d = math.derivative(expression, 'x').evaluate(scope);
-            currentX = currentX + math.abs(1 / d);
+        if(currentPath.length > 0) {
+            paths.push(currentPath);
         }
-        currentZ = currentZ + step;
-        paths.push(path);
     }
-    */
-
-    // BELOW WORKS FINE
-    console.log(paths);
 
     let graphOptions = {
         pathArray: paths,
-        updatable: true,
-        sideOrientation: BABYLON.Mesh.DOUBLESIDE
+        updatable: false,
+        closePath: false
     }
-
+    
+    let mat = new BABYLON.StandardMaterial("mat1", myScene);
+	mat.alpha = 1.0;
+	mat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 1.0);
+	mat.backFaceCulling = false;
+	//mat.wireframe = true;
     let currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
+    currentGraph.material = mat;
 }
 
 const resizeThreshold = 30;
-
-//generateMeshFromFunction("x^2+z^2", 5);
+//generateMeshFromFunction("x^2*sin(x)", 5);
+generateMeshFromFunction("x^2+z^2", 5);
 
 
 engine.runRenderLoop(function() {
