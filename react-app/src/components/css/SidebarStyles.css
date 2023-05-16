@@ -12,3 +12,6 @@
     background-color: #fff;
     color: #333;
     }
+.add-scroll {
+    overflow-y:scroll;
+}

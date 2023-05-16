@@ -62,7 +62,7 @@ function Sidebar(props) {
         }
     };
     let reset = () => {
-        var r2 = result;
+        var r2 = [...result];
         for (let i = 0; i < r2.length; i++) {
             r2[i] = ``;
         }
@@ -78,13 +78,14 @@ function Sidebar(props) {
     };
 
     let backspace = () => {
-        if (result !== "") {
-            var r2 = result.slice(0, -1);
+        let r2 = [...result];
+        if (r2[lastFocused] !== "") {
+            r2[lastFocused] = r2[lastFocused].slice(0, -1);
             setResult(
                 r2
             )
         }
-        recreateMesh(r2, 10);
+        recreateMesh(r2[lastFocused], lastFocused);
     };
     function addInputField(e) {
         console.log(e.key);
@@ -103,7 +104,7 @@ function Sidebar(props) {
         return;
     }
     return (
-        <div style={{ height: "100vh", gridColumn: "1/2", gridRow: `1/2` }}>
+        <div className="add-scroll" style={{ height: "100vh", gridColumn: "1/2", gridRow: `1/2` }}>
             <aside style={sidebarStyle}>
                 {
                     arr.map((input, index) => {

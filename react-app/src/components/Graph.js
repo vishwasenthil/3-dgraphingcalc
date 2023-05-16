@@ -51,7 +51,9 @@ export const recreateMesh = (expression, id) => {
 export const clearMesh = (maxId) => {
     for(let i = 0; i < maxId; i++) {
         let currentMesh = myScene.getMeshByName("graph" + i)
-        currentMesh.dispose();
+        if(currentMesh != null) {
+            currentMesh.dispose();
+        }
     }
 }
 
