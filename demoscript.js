@@ -93,6 +93,25 @@ const getSamplingParameters = () => {
     return [absoluteRadius * 3, absoluteRadius * 0.02];    //modify these values (maybe nonlinear function could do) to make the graph look nicer
 }
 
+const getCurvature = (expression, scope, currentY) => {
+    let dx = 0.01;
+    let dxScope = {
+        x : scope.x + dx,
+        y : currentY,
+        z : scope.z
+    };
+
+    let firstDerivativeExpression = math.derivative(expression, 'x');
+    
+    let firstDerivativeAtX = firstDerivativeExpression.evaluate(scope); //derivative respect to x
+    //second derivative is found with approximation
+
+    let firstDerivativeAtDx = firstDerivativeExpression.evaluate(dxScope);
+    let secondDerivative = (firstDerivativeAtDx - firstDerivativeAtX) / dx;
+    let curvature = Math.abs(secondDerivative) / (Math.pow(1 + Math.pow(firstDerivativeAtX,2),1.5)); 
+    return curvature;
+}
+
 /* FUTURE SPRINT PLANS FOR IMPLICIT FUNCTION MESH GENERATION
     Nerdamer - Library that can handle implicit function solving
     Marching Cubes Algiorhtm OR add distinct surface detecting algorithm on current method
@@ -102,14 +121,14 @@ const getSamplingParameters = () => {
 
 
 let yLimit = 15; //figure out the algorithm for determining min/max cutoff values
-let noOverLap = 1;
 
 const generateMeshFromFunction = (expression, id) => {
     let parameters = getSamplingParameters();
-    let range = parameters[0];
+    let range = 0.5 * parameters[0];
     let step = parameters[1];
+    let curvatureStep = 0.05;
     const paths = [];
-    
+    // WORKING VERSION WITHOUT CURVATURE BASED STEP
     for (let currentZ = -1 * range; currentZ < range; currentZ = currentZ + step) {
         
         let currentPath = [];
@@ -126,14 +145,47 @@ const generateMeshFromFunction = (expression, id) => {
                 let point = new BABYLON.Vector3(currentX, currentY, currentZ)
                 currentPath.push(point);                 
             }
-            
         }
 
         if(currentPath.length > 0) {
             paths.push(currentPath);
         }
     }
+    
+    
+    // EXPERIMENTAL VERSION WITH CURVATURE BASED STEP
+    /*
+    let currentZ = -0.05 * range;
+    while(currentZ < range) {
+        let currentX = -1 * range;
+        let currentPath = [];
+        while(currentX < range) {
+            let scope = {
+                x: currentX,
+                z: currentZ
+            };
 
+            let currentY = math.evaluate(expression, scope);
+            if(Math.abs(currentY) < yLimit) {
+                let point = new BABYLON.Vector3(currentX, currentY, currentZ);
+                currentPath.push(point);                 
+            }
+
+            let curvature = getCurvature(expression, scope, currentY);
+            console.log(scope);
+            let currentStep = Math.min(curvatureStep/curvature, step);
+            currentX += currentStep; //higher curvature smaller step, lower curvature bigger step
+        }
+
+
+        if(currentPath.length > 0) {
+            paths.push(currentPath);
+        }
+        currentZ += 5 * step;
+    }
+    */
+
+    
     let graphOptions = {
         pathArray: paths,
         updatable: false,
@@ -145,13 +197,16 @@ const generateMeshFromFunction = (expression, id) => {
 	mat.diffuseColor = new BABYLON.Color3(0.5, 0.5, 1.0);
 	mat.backFaceCulling = false;
 	//mat.wireframe = true;
-    let currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
-    currentGraph.material = mat;
+    if (paths.length > 0) {
+        let currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
+        currentGraph.material = mat;
+    }
 }
 
 const resizeThreshold = 30;
 //generateMeshFromFunction("x^2*sin(x)", 5);
-generateMeshFromFunction("x^2+z^2", 5);
+//generateMeshFromFunction("x^2+z^2", 5);
+
 
 
 engine.runRenderLoop(function() {
