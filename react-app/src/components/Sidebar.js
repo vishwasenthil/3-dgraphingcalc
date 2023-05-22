@@ -11,6 +11,7 @@ function Sidebar(props) {
     const [result, setResult] = useState([``]);
     const [theme, setTheme] = useState('light');
     let [lastFocused, setLastFocused] = useState(0);
+    let colorRef = useRef();
 
     let sidebarStyle = {
         height: "100%",
@@ -44,8 +45,12 @@ function Sidebar(props) {
         r[e.target.id] = e.target.value;
 
         setResult(r); //sets result/value of textbox to updated version
-        recreateMesh(e.target.value, e.target.id);
+        recreateMesh(e.target.value, e.target.id, colorRef.current.value);
     }
+
+   
+
+
     let onClick = button => {
         if (button === "C") {
             reset()
@@ -58,7 +63,7 @@ function Sidebar(props) {
             r2[lastFocused] = r2[lastFocused]+button;
             console.log(r2[lastFocused]);
             setResult(r2);
-            recreateMesh(r2[lastFocused], lastFocused); //changed parameters
+            recreateMesh(r2[lastFocused], lastFocused,colorRef.current.value); //changed parameters
         }
     };
     let reset = () => {
@@ -73,7 +78,7 @@ function Sidebar(props) {
 
         console.log(result);
         for (let i = 0; i < r2.length; i++) {
-            recreateMesh(r2[i], i);
+            recreateMesh(r2[i], i, colorRef.current.value);
         }
     };
 
@@ -110,7 +115,11 @@ function Sidebar(props) {
                     arr.map((input, index) => {
                         return (
                             <div>
-                                <input key={index} ref={inputRef} onFocus={(()=>setLastFocused(index))} onInput={handleInput} value={result[index]} onKeyDown={addInputField} id={index} type="text" style={{ width: `100%`, boxSizing: `border-box` }} />
+                                <input key={index} ref={inputRef} onFocus={(()=>setLastFocused(index))} onInput={handleInput} value={result[index]} onKeyDown={addInputField} id={index} type="text" autoFocus style={{ width: `100%`, boxSizing: `border-box` }} />
+                                <input onChange={e=>{
+                                    recreateMesh(result[index], e.target.id, e.target.value)
+                                    console.log(e.target.value)
+                                }} type="color" ref={colorRef} id={index}/>
                             </div>
                         );
                     })

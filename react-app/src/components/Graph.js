@@ -33,7 +33,16 @@ const axes = new BABYLON.AxesViewer(scene, 10); //customize axes directions for 
 
 //removes currently old graph and creates a new graph based on new informations
 
-export const recreateMesh = (expression, id) => {
+export const recreateMesh = (expression, id, color) => {
+    let r = parseInt(color.slice(1, 3), 16);
+    let g = parseInt(color.slice(3, 5), 16);
+    let b = parseInt(color.slice(5, 7), 16);
+
+    console.log(`${r}, ${g}, ${b}`);
+    console.log(`color: ${color}`);
+
+    let rgb = `${r}, ${g}, ${b}`;
+
     console.log(id);
     let currentGraph = myScene.getMeshById("graph" + id); 
     console.log(currentGraph);
@@ -41,7 +50,7 @@ export const recreateMesh = (expression, id) => {
         currentGraph.dispose();
     }
     try {
-        generateMeshFromFunction(expression, id);
+        generateMeshFromFunction(expression, id, r, g, b);
     }    
     catch(error) {
         //error statement if needed. display something to let user know of what to do?
@@ -70,7 +79,7 @@ const getSamplingParameters = () => {
     Marching Cubes Algiorhtm OR add distinct surface detecting algorithm on current method
 */
 //
-const generateMeshFromFunction = (expression, id) => {
+const generateMeshFromFunction = (expression, id, r, g, b) => {
     let parameters = getSamplingParameters();
     let range = parameters[0];
     let step = parameters[1];
@@ -99,6 +108,11 @@ const generateMeshFromFunction = (expression, id) => {
     }
 
     currentGraph = BABYLON.MeshBuilder.CreateRibbon("graph" + id, graphOptions, myScene);
+    let material = new BABYLON.StandardMaterial(myScene);
+    material.alpha = 1;
+    console.log(`color generate: ${r}, ${g}, ${b}`);
+    material.diffuseColor = new BABYLON.Color3(r/255,g/255,b/255);
+    currentGraph.material = material;
 
 }
 
