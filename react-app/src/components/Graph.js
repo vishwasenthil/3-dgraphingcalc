@@ -1,8 +1,7 @@
+import React, { useEffect, useRef } from 'react';
 import * as BABYLON from "@babylonjs/core";
 import SceneComponent from "babylonjs-hook";
-
 import {evaluate} from 'mathjs'
-
 import "./css/GraphStyles.css";
 
 let camera;
@@ -44,7 +43,7 @@ export const recreateMesh = (expression, id) => {
     catch(error) {
         //error statement if needed. display something to let user know of what to do?
     }
-}
+};
 
 
 //parameter - radius of camera
@@ -92,7 +91,7 @@ const generateMeshFromFunction = (expression, id) => {
 
 }
 
-const resizeThreshold = 30;
+const resizeThreshold = 10;
 
 /**
  * Will run on every frame render.  We are spinning the box on y-axis.
@@ -100,25 +99,37 @@ const resizeThreshold = 30;
 const onRender = (scene) => {
 scene.render();
 };
-/*
-const resizeGraph = () => {
+
+
+const resizeGraph = (expression) => {
 if (Math.abs(lastRadius - camera.radius) > resizeThreshold) {
     lastRadius = camera.radius;
-    recreateMesh(textInput.value, lastRadius);
+    recreateMesh(expression, lastRadius);
 }
-}
-*/
+};
 
 
 
 function Graph() {
-
-    //const resizeInterval = setInterval(resizeGraph, 5000);
-    return(
-        <div>
-            <SceneComponent antialias onSceneReady={onSceneReady} onRender={onRender} id="my-canvas" />
-        </div>
+    const textInputRef = useRef(null);
+  
+    useEffect(() => {
+      window.addEventListener('resize', () => {
+        resizeGraph(textInputRef.current.value);
+      });
+      return () => {
+        window.removeEventListener('resize', () => {
+          resizeGraph(textInputRef.current.value);
+        });
+      };
+    }, []);
+  
+    return (
+      <div>
+        <input type="text" ref={textInputRef} />
+        <SceneComponent antialias onSceneReady={onSceneReady} id="my-canvas" />
+      </div>
     );
-}
+  }
 
 export default Graph;
