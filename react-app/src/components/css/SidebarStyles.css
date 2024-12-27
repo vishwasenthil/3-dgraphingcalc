@@ -1,0 +1,17 @@
+#sidebar {
+    grid-column:"1/2";
+    background:"#ccc";
+    border:"3px solid black";
+    position:"relative";
+}
+.dark {
+    background-color: #444343;
+    color: #fff;
+    }
+.light {
+    background-color: #fff;
+    color: #333;
+    }
+.add-scroll {
+    overflow-y:scroll;
+}
