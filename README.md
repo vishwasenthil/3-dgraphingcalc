@@ -1,4 +1,4 @@
-# 3-d graphing calculator 
+# 3D Graphing Calculator
 
 ## About
 This is a 3D graphing calculator that allows users to plot and visualize 3D mathematical functions in real-time. The calculator provides an interactive interface for creating 3D plots and analyzing mathematical expressions in three-dimensional space.
