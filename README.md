@@ -1,16 +1,42 @@
 # 3-d graphing calculator 
 
+## About
+This is a 3D graphing calculator that allows users to plot and visualize 3D mathematical functions in real-time. The calculator provides an interactive interface for creating 3D plots and analyzing mathematical expressions in three-dimensional space.
 
-Hi! We are Team Gengar Gang of Mr. Hong's 6th period Special Topics in CS class. For our project, we decided to build our own 3D graphing calculator. Our main motive behind this are to gain experience with creating visualizations and working with websites. And because available verisons are slow and unintuitive to use, we plan on trying to create our own that works better for us. 
+## Features
 
-Table of Contents:
-(TBD)
+- **Interactive 3D Plots**: Plot and visualize any mathematical expression in 3D space.
+- **Real-Time Graphing**: Modify the function, domain, and range to see the graph update instantly.
+- **Multiple Functions**: Support for plotting multiple functions at once for comparison.
+- **Customizable Appearance**: Customize colors, grids, and more.
+- **Interactive Controls**: Zoom, pan, and rotate the plot for better understanding.
 
-How to Install and Run:
-(TBD)
+## How to Run
+```
+//Open a terminal
+//Ensure Git is installed
 
-Thoughout the weeks and sprints, we will continuously update this README about new changes and add descriptions for new files. 
+//Clone the repository
+git clone https://github.com/vishwasenthil/3-dgraphingcalc.git
 
-  Thanks for reading and wish us luck,
-  
-  Brian, Owen, Izzie, Vishwa
+//Navigate to the project directory
+cd react-app
+
+//Start the application
+npm start
+
+```
+
+## Usage
+
+Once the application is running, you can interact with the 3D graph by entering a mathematical function. Here’s how to use it:
+
+Function Input: In the input field, type the mathematical function you want to visualize. For example:
+
+z = x^2 + y^2
+z = sin(x) * cos(y)
+z = x^3 - 3*x*y^2
+
+Zoom and Rotate: Use the mouse scroll wheel to zoom in and out, and click/drag to rotate the graph in 3D space.
+
+Add Multiple Functions: Enter multiple functions to compare them side by side
